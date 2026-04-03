@@ -1,0 +1,61 @@
+{
+  "target_ides": ["cursor", "trae"],
+  "cursor_preferences": {
+    "model": "claude-4.6-opus",
+    "model_mode": "max",
+    "thinking": true,
+    "description": "Claude Opus 4.6 Max with extended thinking enabled"
+  },
+  "trae_preferences": {
+    "model": "best_available",
+    "plugins": ["openspec", "superpower"],
+    "description": "Best available model with OpenSpec + Superpower plugins"
+  },
+  "plugins": {
+    "openspec": {
+      "enabled": true,
+      "description": "Project specification framework for AI context"
+    },
+    "superpower": {
+      "enabled": true,
+      "marketplace": "obra/superpowers-marketplace",
+      "description": "Enhanced AI coding power with proactive issue detection"
+    }
+  },
+  "mcp_servers": {
+    "context7": {
+      "enabled": true,
+      "command": "npx -y @upstash/context7-mcp@latest",
+      "description": "Real-time library documentation lookup"
+    },
+    "figma": {
+      "enabled": true,
+      "description": "Figma design integration"
+    }
+  },
+  "rules": {
+    "general_always_apply": [
+      "deep-reasoning",
+      "superpower-core",
+      "code-review",
+      "git-workflow",
+      "openspec-integration",
+      "skill-auto-suggest"
+    ],
+    "android_file_scoped": [
+      "android-kotlin",
+      "compose-ui",
+      "architecture-mvvm",
+      "kotlin-jetpack"
+    ],
+    "file_scoped": [
+      "reference-file-standards"
+    ]
+  },
+  "skills": [
+    "general-dev"
+  ],
+  "user_rules": [
+    "Always respond in 中文"
+  ]
+}

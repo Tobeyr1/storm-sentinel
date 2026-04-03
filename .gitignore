@@ -1,0 +1,29 @@
+# IDE files
+.idea/
+
+# Build files
+build/
+.gradle/
+
+# IDEA
+*.iml
+out/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Local configuration files
+local.properties
+
+# Log files
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Dependency directories
+node_modules/
+jars/
