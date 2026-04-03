@@ -44,7 +44,7 @@ Run the code review manually:
 
 ```bash
 # Run Dart format check
-dart format --dry-run --set-exit-if-changed .
+dart format --output=none --set-exit-if-changed .
 
 # Run Flutter analyze
 flutter analyze
