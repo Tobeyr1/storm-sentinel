@@ -6,7 +6,7 @@ This directory contains scripts and configuration files for the code review syst
 
 The code review system provides comprehensive automated code reviews for each commit, including:
 
-1. **Flutter Format Check** - Ensures code follows Flutter's formatting guidelines
+1. **Dart Format Check** - Ensures code follows Dart's formatting guidelines
 2. **Flutter Analyze** - Static analysis for potential issues
 3. **Flutter Test** - Runs unit tests to ensure functionality
 4. **AI Code Review** - Uses AI to provide in-depth code review
@@ -43,8 +43,8 @@ To use the AI code review feature with a real AI API, you'll need to:
 Run the code review manually:
 
 ```bash
-# Run Flutter format check
-flutter format --dry-run --set-exit-if-changed .
+# Run Dart format check
+dart format --dry-run --set-exit-if-changed .
 
 # Run Flutter analyze
 flutter analyze
@@ -64,7 +64,7 @@ The code review system is automatically triggered on:
 
 ## Review Results
 
-- **Flutter Format/Analyze/Test**: Results are displayed in the CI/CD logs
+- **Dart Format/Flutter Analyze/Test**: Results are displayed in the CI/CD logs
 - **AI Code Review**: Results are saved to `.trae/reviews/` directory as JSON files
 
 ## Customization
