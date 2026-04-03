@@ -72,7 +72,7 @@ dependencies:
   # location: ^5.1.0
   # weather: ^3.1.1
 
- dev_dependencies:
+dev_dependencies:
   flutter_test:
     sdk: flutter
 
