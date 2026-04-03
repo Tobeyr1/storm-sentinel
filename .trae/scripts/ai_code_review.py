@@ -67,19 +67,19 @@ Please provide a comprehensive review covering:
 6. Compliance with Flutter/Dart guidelines
 
 Format your response as JSON with the following structure:
-{
+{{
   "file": "<file_path>",
   "timestamp": "<iso_timestamp>",
   "issues": [
-    {
+    {{
       "severity": "<critical|high|medium|low>",
       "title": "<issue_title>",
       "description": "<issue_description>",
       "suggestion": "<fix_suggestion>"
-    }
+    }}
   ],
   "summary": "<overall_summary>"
-}
+}}
 """
 
     # For now, we'll just create a placeholder review
