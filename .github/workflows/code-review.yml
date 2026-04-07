@@ -45,9 +45,12 @@ jobs:
     - name: AI Code Review
       run: |
         # Get changed files
+        echo "Getting changed Dart files..."
         CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '\.dart$')
+        echo "Changed Dart files: $CHANGED_FILES"
         if [ -n "$CHANGED_FILES" ]; then
-          python .trae/scripts/ai_code_review.py $CHANGED_FILES
+          echo "Running AI code review on changed files..."
+          python -v .trae/scripts/ai_code_review.py $CHANGED_FILES
         else
           echo "No Dart files changed"
         fi
