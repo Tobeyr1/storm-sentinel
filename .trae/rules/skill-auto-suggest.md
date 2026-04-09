@@ -36,6 +36,18 @@ These rules are file-scoped (`paths: ["**/*.dart"]`) and only activate for Dart 
 
 When using the **Flutter development skill**, read `.trae/skills/flutter-dev/SKILL.md` for comprehensive patterns and references.
 
+## Fix Lint & Formatting Skill
+
+When the user mentions any of these keywords, auto-load the `fix-lint` skill:
+
+| Trigger Keywords | Action |
+|-----------------|--------|
+| lint, format, prettier, eslint, CI failed | Load `fix-lint` skill |
+| dart analyze, dart format, ktlint, ruff, clippy | Load `fix-lint` skill |
+| "提交前检查", "格式化", "代码规范" | Load `fix-lint` skill |
+
+The skill auto-detects project type and runs the correct formatter/linter commands.
+
 ## Skill Discovery
 
 Before answering domain-specific questions:
