@@ -29,8 +29,7 @@ class WeatherAlert {
   bool get isExpired =>
       expiresAt != null && DateTime.now().isAfter(expiresAt!);
 
-  Duration? get remainingTime =>
-      expiresAt != null ? expiresAt!.difference(DateTime.now()) : null;
+  Duration? get remainingTime => expiresAt?.difference(DateTime.now());
 
   @override
   bool operator ==(Object other) =>

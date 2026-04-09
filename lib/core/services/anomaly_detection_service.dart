@@ -42,7 +42,7 @@ class AnomalyDetectionService {
         return AnomalyDetectionResult(
           isAnomaly: true,
           confidenceScore: 0.85 + (severityJump * 0.05),
-          reason: '在${timeDiff}分钟内严重等级跳升了$severityJump级',
+          reason: '在$timeDiff分钟内严重等级跳升了$severityJump级',
         );
       }
     }

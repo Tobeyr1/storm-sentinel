@@ -1,20 +1,55 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+
 import '../../core/models/alert_severity.dart';
 import '../../core/models/weather_alert.dart';
 import '../../core/repositories/weather_repository.dart';
+import '../api/api_client.dart';
+import '../api/api_constants.dart';
+import '../api/api_exception.dart';
 import '../mock/mock_weather_data.dart';
 
+/// WeatherRepository 实现
+/// 对应 Kotlin: class WeatherRepositoryImpl @Inject constructor(
+///   private val api: WeatherApi,
+///   private val dao: WeatherDao
+/// ) : WeatherRepository
+///
+/// 当前使用 Mock 数据，后续替换为真实 API 调用
 class WeatherRepositoryImpl implements WeatherRepository {
+  final ApiClient apiClient;
+  final bool _useMock;
+
   List<WeatherAlert>? _cachedAlerts;
   final _alertsController = StreamController<List<WeatherAlert>>.broadcast();
 
+  WeatherRepositoryImpl({
+    required this.apiClient,
+    bool useMock = true,
+  }) : _useMock = useMock;
+
   @override
   Future<List<WeatherAlert>> getActiveAlerts() async {
-    await _simulateNetworkDelay();
+    if (_useMock) return _getActiveAlertsMock();
+    return _getActiveAlertsRemote();
+  }
+
+  Future<List<WeatherAlert>> _getActiveAlertsMock() async {
+    await Future.delayed(const Duration(milliseconds: 300));
     _cachedAlerts = MockWeatherData.alerts.where((a) => a.isActive).toList()
       ..sort((a, b) => b.severity.priority.compareTo(a.severity.priority));
     return _cachedAlerts!;
+  }
+
+  Future<List<WeatherAlert>> _getActiveAlertsRemote() async {
+    try {
+      await apiClient.get(ApiConstants.alertsEndpoint);
+      // TODO: 真实 API 接入时，在此解析 response.data → List<WeatherAlert>
+      throw UnimplementedError('远程 API 尚未接入');
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
   }
 
   @override
@@ -62,7 +97,6 @@ class WeatherRepositoryImpl implements WeatherRepository {
       final alerts = await getActiveAlerts();
       _alertsController.add(alerts);
     });
-
     getActiveAlerts().then(_alertsController.add);
   }
 
@@ -70,7 +104,4 @@ class WeatherRepositoryImpl implements WeatherRepository {
     _refreshTimer?.cancel();
     _alertsController.close();
   }
-
-  Future<void> _simulateNetworkDelay() =>
-      Future.delayed(const Duration(milliseconds: 300));
 }

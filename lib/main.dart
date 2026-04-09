@@ -1,51 +1,46 @@
 import 'package:flutter/material.dart';
-import 'data/repositories/weather_repository_impl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final weatherRepository = WeatherRepositoryImpl();
+import 'router/app_router.dart';
 
 void main() {
-  runApp(const StormSentinelApp());
+  /// ProviderScope 是 Riverpod 的根容器
+  /// 对应 Kotlin Hilt: @HiltAndroidApp class App : Application()
+  runApp(
+    const ProviderScope(
+      child: StormSentinelApp(),
+    ),
+  );
 }
 
-/// develop 分支占位 App —— 各 spike 分支会替换此文件
+/// App 根 Widget
+/// 对应 Kotlin:
+/// ```kotlin
+/// @AndroidEntryPoint
+/// class MainActivity : ComponentActivity() {
+///   override fun onCreate(...) {
+///     setContent { AppTheme { AppNavHost() } }
+///   }
+/// }
+/// ```
+///
+/// 此 main.dart 是 UI-agnostic 骨架。
+/// spike 分支合并时会替换 MaterialApp 为 themed 版本。
 class StormSentinelApp extends StatelessWidget {
   const StormSentinelApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final router = createAppRouter();
+
+    return MaterialApp.router(
       title: 'Storm Sentinel',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         useMaterial3: true,
       ),
-      home: const _PlaceholderHome(),
-    );
-  }
-}
-
-class _PlaceholderHome extends StatelessWidget {
-  const _PlaceholderHome();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Storm Sentinel — develop')),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.construction, size: 64),
-            SizedBox(height: 16),
-            Text(
-              '共享架构层已就绪',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text('请切换到 spike/* 分支查看 UI 原型'),
-          ],
-        ),
-      ),
+      routerConfig: router,
     );
   }
 }

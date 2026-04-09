@@ -13,9 +13,32 @@ alwaysApply: true
 | Platform | Flutter 全平台 (Android, iOS, Web, macOS, Windows, Linux) |
 | Language | Dart (SDK >=3.4.0) |
 | UI Framework | 评估中 (spike/material3 vs spike/forui) |
-| Build System | Flutter CLI |
-| Architecture | Clean Architecture (core → data → features) |
-| State Management | 待定 (spike 阶段评估) |
+| Build System | Flutter CLI + build_runner (代码生成) |
+| Architecture | Clean Architecture / MVVM |
+| State Management | Riverpod (AsyncNotifier) |
+| Networking | Dio |
+| Routing | go_router |
+| DI | Riverpod (Provider 即 DI 容器) |
+| Data Models | freezed + json_serializable |
+| Local Storage | shared_preferences |
+
+## Kotlin ↔ Flutter 概念映射
+
+| Kotlin / Compose | Flutter / Riverpod |
+|----|----|
+| `ViewModel` | `AsyncNotifier` / `Notifier` |
+| `StateFlow<UiState>` | `AsyncValue<T>` (Loading/Data/Error) |
+| `Repository` interface | `abstract class` + `Provider<Repo>` |
+| `@Inject` / Hilt `@Module` | `Provider` / `ref.read()` / `ref.watch()` |
+| `Retrofit` + `OkHttp` | `Dio` + `ApiClient` + `Interceptor` |
+| `Kotlin data class` | `freezed` class (or plain Dart class) |
+| `NavHost` / `NavGraph` | `GoRouter` / `GoRoute` / `ShellRoute` |
+| `collectAsState()` | `ref.watch(provider)` |
+| `viewModel.doSomething()` | `ref.read(provider.notifier).doSomething()` |
+| `SavedStateHandle` | `FamilyAsyncNotifier` + 路由参数 |
+| `DataStore` / `SharedPreferences` | `shared_preferences` |
+| `Timber` | `logger` |
+| `KSP` / `KAPT` | `build_runner` |
 
 ## Module Structure
 
@@ -24,16 +47,29 @@ lib/
 ├── core/                  # 纯 Dart 业务层，零 UI 依赖
 │   ├── models/            # 数据模型 (WeatherAlert, AlertSeverity, LocationInfo)
 │   ├── repositories/      # 仓库抽象接口
-│   └── services/          # 业务逻辑 (AnomalyDetectionService)
+│   ├── services/          # 业务逻辑 (AnomalyDetectionService)
+│   └── utils/             # 通用工具 (Result<T>)
 ├── data/                  # 数据层实现
-│   ├── api/               # HTTP 客户端（待实现）
+│   ├── api/               # Dio 网络层 (ApiClient, Interceptors, ApiException)
 │   ├── mock/              # Mock 数据（原型期）
 │   └── repositories/      # 仓库具体实现
-├── features/              # 功能页面（按 spike 分支各自实现）
-│   ├── alert_list/        # 预警列表页
-│   └── alert_detail/      # 预警详情页
-└── ui/                    # UI 框架层（按 spike 分支各自实现）
-    └── theme/             # 主题配置
+├── providers/             # Riverpod DI 容器（对应 Hilt Modules）
+│   ├── dio_provider.dart
+│   ├── repository_providers.dart
+│   └── service_providers.dart
+├── router/                # go_router 路由配置（对应 NavGraph）
+│   └── app_router.dart
+├── features/              # 功能模块（MVVM 单元）
+│   ├── alert_list/
+│   │   ├── alert_list_page.dart          # View (Widget)
+│   │   └── alert_list_view_model.dart    # ViewModel (AsyncNotifier)
+│   ├── alert_detail/
+│   │   ├── alert_detail_page.dart
+│   │   └── alert_detail_view_model.dart
+│   └── settings/          # 待实现
+├── ui/                    # UI 框架层（按 spike 分支各自实现）
+│   └── theme/
+└── main.dart              # 入口 + ProviderScope
 ```
 
 ## Branch Strategy
@@ -41,19 +77,23 @@ lib/
 | Branch | Purpose |
 |----|----|
 | `main` | 稳定发布分支 |
-| `develop` | 共享架构层（core + data），无特定 UI 框架 |
+| `develop` | 共享架构层基础 (core + data mock) |
+| `feature/framework-foundation` | 框架层 (Riverpod + Dio + go_router) |
 | `spike/material3` | Material 3 + flex_color_scheme UI 原型 |
 | `spike/forui` | Forui UI 原型 |
 
 ## Key Design Decisions
 
-- **core/ 层不允许 import flutter/material.dart** — 确保业务逻辑与 UI 框架完全解耦
-- **features/ 层由各 spike 分支独立实现** — 同一页面、同一数据，不同 UI 框架
-- **Mock 数据在原型期直接使用** — 后续替换为真实 API
+- **core/ 层不允许 import flutter/material.dart**
+- **providers/ 层是 DI 的唯一入口** — 不要在 Widget 中直接 new Repository
+- **ViewModel 使用 AsyncNotifier** — 自动管理 Loading/Data/Error 三态
+- **路由使用 go_router ShellRoute** — 底部导航不重建页面
+- **API 错误统一为 ApiException sealed class** — 所有网络错误一处处理
 
 ## Naming Conventions
 
 - 文件名：snake_case (`weather_alert.dart`)
 - 类名：PascalCase (`WeatherAlert`)
-- 常量/枚举值：camelCase (`alertSeverity`)
-- 私有成员：前缀 `_` (`_cachedAlerts`)
+- Provider 名：camelCase + Provider 后缀 (`weatherRepositoryProvider`)
+- ViewModel：PascalCase + ViewModel 后缀 (`AlertListViewModel`)
+- 路由路径：kebab-case (`/alert/:id`)
