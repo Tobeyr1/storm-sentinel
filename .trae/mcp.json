@@ -6,7 +6,9 @@
     },
     "dart": {
       "command": "dart",
-      "args": ["mcp-server"]
+      "args": [
+        "mcp-server"
+      ]
     }
   }
 }
