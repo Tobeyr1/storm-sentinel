@@ -1,0 +1,59 @@
+---
+description: Project specification for StormSentinel
+alwaysApply: true
+---
+
+# OpenSpec — StormSentinel Specification
+
+## Project Overview
+
+| Field | Value |
+|----|----|
+| Project Name | Storm Sentinel |
+| Platform | Flutter 全平台 (Android, iOS, Web, macOS, Windows, Linux) |
+| Language | Dart (SDK >=3.4.0) |
+| UI Framework | 评估中 (spike/material3 vs spike/forui) |
+| Build System | Flutter CLI |
+| Architecture | Clean Architecture (core → data → features) |
+| State Management | 待定 (spike 阶段评估) |
+
+## Module Structure
+
+```
+lib/
+├── core/                  # 纯 Dart 业务层，零 UI 依赖
+│   ├── models/            # 数据模型 (WeatherAlert, AlertSeverity, LocationInfo)
+│   ├── repositories/      # 仓库抽象接口
+│   └── services/          # 业务逻辑 (AnomalyDetectionService)
+├── data/                  # 数据层实现
+│   ├── api/               # HTTP 客户端（待实现）
+│   ├── mock/              # Mock 数据（原型期）
+│   └── repositories/      # 仓库具体实现
+├── features/              # 功能页面（按 spike 分支各自实现）
+│   ├── alert_list/        # 预警列表页
+│   └── alert_detail/      # 预警详情页
+└── ui/                    # UI 框架层（按 spike 分支各自实现）
+    └── theme/             # 主题配置
+```
+
+## Branch Strategy
+
+| Branch | Purpose |
+|----|----|
+| `main` | 稳定发布分支 |
+| `develop` | 共享架构层（core + data），无特定 UI 框架 |
+| `spike/material3` | Material 3 + flex_color_scheme UI 原型 |
+| `spike/forui` | Forui UI 原型 |
+
+## Key Design Decisions
+
+- **core/ 层不允许 import flutter/material.dart** — 确保业务逻辑与 UI 框架完全解耦
+- **features/ 层由各 spike 分支独立实现** — 同一页面、同一数据，不同 UI 框架
+- **Mock 数据在原型期直接使用** — 后续替换为真实 API
+
+## Naming Conventions
+
+- 文件名：snake_case (`weather_alert.dart`)
+- 类名：PascalCase (`WeatherAlert`)
+- 常量/枚举值：camelCase (`alertSeverity`)
+- 私有成员：前缀 `_` (`_cachedAlerts`)

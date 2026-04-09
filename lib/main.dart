@@ -1,54 +1,48 @@
 import 'package:flutter/material.dart';
+import 'data/repositories/weather_repository_impl.dart';
+
+final weatherRepository = WeatherRepositoryImpl();
 
 void main() {
-  runApp(const MyApp());
+  runApp(const StormSentinelApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// develop 分支占位 App —— 各 spike 分支会替换此文件
+class StormSentinelApp extends StatelessWidget {
+  const StormSentinelApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Storm Sentinel',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Storm Sentinel'),
+      home: const _PlaceholderHome(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class _PlaceholderHome extends StatelessWidget {
+  const _PlaceholderHome();
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
+      appBar: AppBar(title: const Text('Storm Sentinel — develop')),
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome to Storm Sentinel!',
-            ),
+          children: [
+            Icon(Icons.construction, size: 64),
+            SizedBox(height: 16),
             Text(
-              'Real-time severe weather alerts with smart anomaly detection',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
+              '共享架构层已就绪',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 8),
+            Text('请切换到 spike/* 分支查看 UI 原型'),
           ],
         ),
       ),
